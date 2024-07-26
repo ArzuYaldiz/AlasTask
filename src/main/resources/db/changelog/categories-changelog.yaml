@@ -1,0 +1,49 @@
+databaseChangeLog:
+  - changeSet:
+      id: drop_Table_categories
+      author: root
+      preConditions:
+        onFail: MARK_RAN
+        not:
+          tableExists:
+            tableName: categories
+      changes:
+        - dropForeignKeyConstraint:
+            constraintName: fk_category
+            baseTableName: products
+        - dropTable:
+            cascadeConstraints: true
+            tableName: categories
+
+  - changeSet:
+      id: create_categories
+      author: root
+      preConditions:
+        onFail: MARK_RAN
+        not:
+          tableExists:
+            tableName: categories
+      changes:
+        - createTable:
+            tableName: categories
+            columns:
+              - column:
+                  name: categories_id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(255)
+                  constraints:
+                    unique: true
+                    nullable: false
+        - addForeignKeyConstraint:
+            baseTableName: products
+            baseColumnNames: category_id
+            constraintName: fk_category
+            referencedTableName: categories
+            referencedColumnNames: categories_id
+            onDelete: CASCADE

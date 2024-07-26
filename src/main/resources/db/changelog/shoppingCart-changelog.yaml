@@ -1,0 +1,26 @@
+databaseChangeLog:
+
+  - changeSet:
+      id: create_shoppingcart
+      author: root
+      preConditions:
+        onFail: MARK_RAN
+        not:
+          tableExists:
+            tableName: shopping_cart
+      changes:
+        - createTable:
+            tableName: shopping_cart
+            columns:
+              - column:
+                  name: cart_id
+                  type: int
+                  autoIncrement: true
+                  constraints:
+                    primaryKey: true
+                    nullable: false
+              - column:
+                  name: name
+                  type: varchar(255)
+                  constraints:
+                    nullable: false

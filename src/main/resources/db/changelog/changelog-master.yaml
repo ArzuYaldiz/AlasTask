@@ -1,0 +1,9 @@
+databaseChangeLog:
+  - include:
+      file: db/changelog/categories-changelog.yaml
+  - include:
+      file: db/changelog/productdetails-changelog.yaml
+  - include:
+      file: db/changelog/shoppingCart-changelog.yaml
+  - include:
+      file: db/changelog/products-changelog.yaml
