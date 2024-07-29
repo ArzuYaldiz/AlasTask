@@ -1,4 +1,4 @@
-package com.example.liquibase.ReguestResponseDto;
+package com.example.liquibase.RequestResponseDto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -9,7 +9,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class AuthenticationResponseDto {
+public class RegisterRequestDto {
 
-    private String token;
+    private String userName;
+    private String email;
+    private String password;
 }

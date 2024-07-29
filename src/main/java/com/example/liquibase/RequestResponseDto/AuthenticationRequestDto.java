@@ -1,19 +1,17 @@
-package com.example.liquibase.ReguestResponseDto;
+package com.example.liquibase.RequestResponseDto;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-import java.security.PrivateKey;
-
 @Data
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor
-public class RegisterRequestDto {
+public class AuthenticationRequestDto {
 
-    private String userName;
+
     private String email;
     private String password;
 }
