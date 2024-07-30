@@ -29,7 +29,7 @@ public class AuthenticationImpl implements AuthenticationService {
     @Override
     public AuthenticationResponseDto register(RegisterRequestDto request) {
         var user = User.builder()
-                .user_name(request.getUserName())
+                .user_name(request.getUser_name())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(Role.USER)

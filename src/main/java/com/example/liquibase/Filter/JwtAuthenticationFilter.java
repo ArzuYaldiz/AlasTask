@@ -32,8 +32,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
             "/shopping-carts/",
             "/product",
             "/product/",
-            "/api/auth/",
-            "/api/auth"
+            "/api/auth/"
     );
 
     @Override
@@ -41,7 +40,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                                     @NonNull FilterChain filterChain) throws ServletException, IOException {
         String path = request.getRequestURI();
 
-        // Skip authentication for excluded paths
         if (isExcludedPath(path)) {
             filterChain.doFilter(request, response);
             return;
@@ -66,7 +64,6 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
                 }
             }
         } else {
-            // Log or handle cases where Authorization header is missing or invalid
             if (authHeader == null) {
                 logger.warn("No Authorization header found.");
             } else {
