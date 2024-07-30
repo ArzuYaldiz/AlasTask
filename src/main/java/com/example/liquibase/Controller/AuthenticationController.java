@@ -4,10 +4,13 @@ import com.example.liquibase.RequestResponseDto.AuthenticationRequestDto;
 import com.example.liquibase.RequestResponseDto.AuthenticationResponseDto;
 import com.example.liquibase.RequestResponseDto.RegisterRequestDto;
 import com.example.liquibase.Service.AuthenticationService;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -32,5 +35,6 @@ public class AuthenticationController {
     public ResponseEntity<String> demo() {
         return ResponseEntity.ok("Hello World");
     }
+
 
 }

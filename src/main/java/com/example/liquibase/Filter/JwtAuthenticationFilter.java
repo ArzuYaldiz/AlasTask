@@ -1,5 +1,6 @@
 package com.example.liquibase.Filter;
 
+import com.example.liquibase.Repository.TokenRepository;
 import com.example.liquibase.Service.JWTService;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
@@ -26,55 +27,39 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
     JWTService jwtService;
     UserDetailsService userDetailsService;
-
-    private static final List<String> EXCLUDED_PATHS = List.of(
-            "/shopping-carts",
-            "/shopping-carts/",
-            "/product",
-            "/product/",
-            "/api/auth/"
-    );
+    TokenRepository tokenRepository;
 
     @Override
     protected void doFilterInternal(@NonNull HttpServletRequest request, @NonNull HttpServletResponse response,
                                     @NonNull FilterChain filterChain) throws ServletException, IOException {
-        String path = request.getRequestURI();
 
-        if (isExcludedPath(path)) {
+        final String authHeader = request.getHeader("Authorization");
+        final String jwtToken;
+        final String userEmail;
+        if (authHeader == null ||!authHeader.startsWith("Bearer ")) {
             filterChain.doFilter(request, response);
             return;
         }
+        jwtToken = authHeader.substring(7);
+        userEmail = jwtService.extractUserEmail(jwtToken);
+        if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+            UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
+            boolean isTokenValid = tokenRepository.findByToken(jwtToken)
+                    .map(t -> t.getExpired() == 0 && t.getRevoked() == 0)
+                    .orElse(false);
 
-        final String authHeader = request.getHeader("Authorization");
-        if (authHeader != null && authHeader.startsWith("Bearer ")) {
-            String jwtToken = authHeader.substring(7);
-            String userEmail = jwtService.extractUserEmail(jwtToken);
-            if (userEmail != null && SecurityContextHolder.getContext().getAuthentication() == null) {
-                UserDetails userDetails = this.userDetailsService.loadUserByUsername(userEmail);
-                if (jwtService.isTokenValid(jwtToken, userDetails)) {
-                    UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
-                            userDetails,
-                            null,
-                            userDetails.getAuthorities()
-                    );
-                    authToken.setDetails(
-                            new WebAuthenticationDetailsSource().buildDetails(request)
-                    );
-                    SecurityContextHolder.getContext().setAuthentication(authToken);
-                }
-            }
-        } else {
-            if (authHeader == null) {
-                logger.warn("No Authorization header found.");
-            } else {
-                logger.warn("Authorization header does not start with 'Bearer '.");
+            if (isTokenValid) {
+                UsernamePasswordAuthenticationToken authToken = new UsernamePasswordAuthenticationToken(
+                        userDetails,
+                        null,
+                        userDetails.getAuthorities()
+                );
+                authToken.setDetails(
+                        new WebAuthenticationDetailsSource().buildDetails(request)
+                );
+                SecurityContextHolder.getContext().setAuthentication(authToken);
             }
         }
-
         filterChain.doFilter(request, response);
-    }
-
-    private boolean isExcludedPath(String path) {
-        return EXCLUDED_PATHS.stream().anyMatch(excludedPath -> path.startsWith(excludedPath));
     }
 }
