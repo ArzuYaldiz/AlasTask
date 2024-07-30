@@ -1,10 +1,7 @@
 package com.example.liquibase.Entity;
 
 import jakarta.persistence.*;
-import lombok.AllArgsConstructor;
-import lombok.Builder;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 
 @Data
 @Entity
@@ -35,4 +32,20 @@ public class Token {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_id_")
     public User user;
+
+    public int getRevoked() {
+        return revoked;
+    }
+
+    public void setRevoked(int revoked) {
+        this.revoked = revoked;
+    }
+
+    public int getExpired() {
+        return expired;
+    }
+
+    public void setExpired(int expired) {
+        this.expired = expired;
+    }
 }

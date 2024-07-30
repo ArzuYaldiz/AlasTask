@@ -28,14 +28,11 @@ public class SecurityConfiguration {
     AuthenticationProvider authenticationProvider;
     LogoutHandler logoutHandler;
 
-    private static final List<String> EXCLUDED_PATHS = List.of("/shopping-carts/**", "/product/**");
-
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers(EXCLUDED_PATHS.toArray(new String[0])).permitAll()
                         .requestMatchers("/api/auth/**").permitAll()
                         .anyRequest().authenticated()
                 )

@@ -34,5 +34,6 @@ public class LogoutImpl implements LogoutHandler {
             storedToken.setRevoked(1);
             tokenRepository.save(storedToken);
         }
+
     }
 }
