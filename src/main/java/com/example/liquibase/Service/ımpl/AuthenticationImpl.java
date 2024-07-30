@@ -52,7 +52,7 @@ public class AuthenticationImpl implements AuthenticationService {
     }
 
     @Override
-    public AuthenticationResponseDto authenticate(AuthenticationRequestDto request) {
+    public AuthenticationResponseDto login(AuthenticationRequestDto request) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(),
