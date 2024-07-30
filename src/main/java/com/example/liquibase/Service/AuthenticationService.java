@@ -9,7 +9,7 @@ public interface AuthenticationService {
 
     public AuthenticationResponseDto register(RegisterRequestDto request);
 
-    public AuthenticationResponseDto authenticate(AuthenticationRequestDto request);
+    public AuthenticationResponseDto login(AuthenticationRequestDto request);
 
     public void revokeAllUserTokens(User user);
 
