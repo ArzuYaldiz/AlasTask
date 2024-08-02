@@ -31,9 +31,9 @@ public class AuthenticationController {
 
     @PostMapping("/login")
     public ResponseEntity<AuthenticationResponseDto> login(@RequestBody AuthenticationRequestDto request) {
+
         User user = authenticationService.login(request);
         authenticationService.redisGetUser(user);
-
         return ResponseEntity.ok(authenticationService.createToken(user));
     }
 

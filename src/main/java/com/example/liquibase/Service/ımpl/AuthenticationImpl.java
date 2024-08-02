@@ -48,7 +48,6 @@ public class AuthenticationImpl implements AuthenticationService {
 
     @Override
     public User login(AuthenticationRequestDto request) {
-        
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(),
@@ -57,7 +56,6 @@ public class AuthenticationImpl implements AuthenticationService {
         );
         var user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow();
-
         return user;
     }
 
