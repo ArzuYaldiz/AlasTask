@@ -1,15 +1,19 @@
 package com.example.liquibase.Entity;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import jakarta.persistence.*;
 import lombok.Builder;
 
+import java.io.Serializable;
 import java.util.LinkedHashSet;
 import java.util.Set;
 
+
 @Entity
 @Table(name = "shopping_cart")
-public class ShoppingCart {
+@JsonIgnoreProperties({"hibernateLazyInitializer", "handler"})
+public class ShoppingCart implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "cart_id", nullable = false)

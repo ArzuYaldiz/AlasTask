@@ -5,12 +5,20 @@ import com.example.liquibase.Entity.ShoppingCart;
 import com.example.liquibase.Repository.ProductRepository;
 import com.example.liquibase.Repository.ShoppingCartRepository;
 import com.example.liquibase.Service.ShoppingProductService;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.stereotype.Service;
+import redis.clients.jedis.Jedis;
 
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 
 @Service
 @RequiredArgsConstructor
@@ -19,9 +27,9 @@ public class ShoppingProductImpl implements ShoppingProductService {
     ShoppingCartRepository shoppingCartRepository;
     ProductRepository productRepository;
 
-
     @Override
-    public int addShoppingCart(int shopping_cart_id, int product_id) {
+    @CachePut(value = "shopping_cart_products", key = "#shopping_cart_id")
+    public ShoppingCart addShoppingCart(int shopping_cart_id, int product_id) {
 
         ShoppingCart shoppingProducts = shoppingCartRepository.findById(shopping_cart_id);
         if (shoppingProducts == null) {
@@ -35,13 +43,12 @@ public class ShoppingProductImpl implements ShoppingProductService {
 
         shoppingCartRepository.addProductToShoppingCart(shopping_cart_id, product_id);
 
-        shoppingCartRepository.save(shoppingProducts);
-
-        return shoppingProducts.getId();
-
+        return  shoppingCartRepository.save(shoppingProducts);
     }
 
+
     @Override
+    @CacheEvict(value = "shopping_cart_products", key = "#shopping_cart_id")
     public void removeProductFromCart(int shopping_cart_id, int product_id) {
         ShoppingCart shoppingProducts = shoppingCartRepository.findById(shopping_cart_id);
         if (shoppingProducts == null) {
@@ -59,6 +66,8 @@ public class ShoppingProductImpl implements ShoppingProductService {
     }
 
     @Override
+
+    @Cacheable(value = "shopping_cart_products", key = "#shopping_cart_id")
     public List<Object[]> getProductsFromCart(int shopping_cart_id) {
         ShoppingCart shoppingProducts = shoppingCartRepository.findById(shopping_cart_id);
 

@@ -4,6 +4,7 @@ import com.example.liquibase.Dto.ProductDto;
 import com.example.liquibase.Dto.ShoppingCartDto;
 import com.example.liquibase.Entity.Product;
 import com.example.liquibase.Entity.ShoppingCart;
+import com.example.liquibase.Repository.ShoppingCartRepository;
 import com.example.liquibase.Service.ShoppingCartService;
 import com.example.liquibase.Service.ShoppingProductService;
 
@@ -25,14 +26,17 @@ public class ShoppingCartController {
 
     private final ShoppingCartService shoppingCartService;
     private final ShoppingProductService shoppingProductService;
+    private final ShoppingCartRepository shoppingCartRepository;
 
     @PostMapping
     public ResponseEntity<String> createShoppingCart(@RequestBody ShoppingCartDto request) {
         if (request.getName() == null || request.getName().isEmpty()) {
             return ResponseEntity.badRequest().body("Name cannot be empty");
         }
-        shoppingCartService.createShoppingCart(request);
-        return ResponseEntity.status(HttpStatus.CREATED).body("Shopping cart created successfully");
+        ShoppingCart newCart = shoppingCartService.createShoppingCart(request);
+        shoppingCartService.redisSaveCart(newCart.getId(), newCart);
+
+        return ResponseEntity.status(HttpStatus.CREATED).body("Shopping cart created successfully with id " + newCart.getId());
     }
 
     @PostMapping("/{id}/product")
@@ -41,9 +45,8 @@ public class ShoppingCartController {
         System.out.println(product_id);
 
         try {
-            int updatedCartId = shoppingProductService.addShoppingCart(cartId, product_id);
-
-            return ResponseEntity.status(HttpStatus.CREATED).body("Product added to shopping cart successfully. ShoppingCart ID: " + updatedCartId);
+            ShoppingCart shoppingCart = shoppingProductService.addShoppingCart(cartId, product_id);
+            return ResponseEntity.status(HttpStatus.CREATED).body("Product added to shopping cart successfully. ShoppingCart ID: " + shoppingCart.getId());
         } catch (IllegalArgumentException e) {
             return ResponseEntity.badRequest().body(e.getMessage());
         }

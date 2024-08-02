@@ -13,7 +13,7 @@ public interface ShoppingProductService {
 
     void removeProductFromCart(int shopping_cart_id, int product_id);
 
-    int addShoppingCart(int shopping_cart_id, int product_id);
+    ShoppingCart addShoppingCart(int shopping_cart_id, int product_id);
 
     List<Object[]> getProductsFromCart(int shopping_cart_id);
 }

@@ -11,18 +11,16 @@ import com.example.liquibase.RequestResponseDto.RegisterRequestDto;
 import com.example.liquibase.Service.AuthenticationService;
 import com.example.liquibase.Service.JWTService;
 import lombok.AccessLevel;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import org.springframework.security.core.Authentication;
+import org.springframework.cache.annotation.CachePut;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import com.example.liquibase.Entity.User;
+import org.springframework.cache.annotation.Cacheable;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
-import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.security.web.authentication.logout.LogoutHandler;
 import org.springframework.stereotype.Service;
+
 
 @Service
 @RequiredArgsConstructor
@@ -36,7 +34,7 @@ public class AuthenticationImpl implements AuthenticationService {
     AuthenticationManager authenticationManager;
 
     @Override
-    public AuthenticationResponseDto register(RegisterRequestDto request) {
+    public User register(RegisterRequestDto request) {
         var user = User.builder()
                 .user_name(request.getUser_name())
                 .email(request.getEmail())
@@ -44,15 +42,13 @@ public class AuthenticationImpl implements AuthenticationService {
                 .role(Role.USER)
                 .build();
         var savedUser = userRepository.save(user);
-        var jwtToken = jwtService.generateToken(user);
-        savedUserToken(savedUser, jwtToken);
-        return AuthenticationResponseDto.builder()
-                .token(jwtToken)
-                .build();
+
+        return savedUser;
     }
 
     @Override
-    public AuthenticationResponseDto login(AuthenticationRequestDto request) {
+    public User login(AuthenticationRequestDto request) {
+        
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(),
@@ -62,6 +58,25 @@ public class AuthenticationImpl implements AuthenticationService {
         var user = userRepository.findByEmail(request.getEmail())
                 .orElseThrow();
 
+        return user;
+    }
+
+    @Override
+    @CachePut(value = "user", key = "#user.user_id")
+    public User redisCreateUser(User user){
+        System.out.println(user.getUser_id());
+        return user;
+    }
+
+    @Override
+    @Cacheable(value = "user", key = "#user.user_id")
+    public User redisGetUser(User user){
+        System.out.println(user.getUser_id());
+        return user;
+    }
+
+    @Override
+    public AuthenticationResponseDto createToken(User user){
         var jwtToken = jwtService.generateToken(user);
         revokeAllUserTokens(user);
         savedUserToken(user, jwtToken);

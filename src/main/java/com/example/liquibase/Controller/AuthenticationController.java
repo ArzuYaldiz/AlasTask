@@ -1,5 +1,6 @@
 package com.example.liquibase.Controller;
 
+import com.example.liquibase.Entity.User;
 import com.example.liquibase.RequestResponseDto.AuthenticationRequestDto;
 import com.example.liquibase.RequestResponseDto.AuthenticationResponseDto;
 import com.example.liquibase.RequestResponseDto.RegisterRequestDto;
@@ -23,18 +24,17 @@ public class AuthenticationController {
 
     @PostMapping("/register")
     public ResponseEntity<AuthenticationResponseDto> register(@RequestBody RegisterRequestDto request) {
-        return ResponseEntity.ok(authenticationService.register(request));
+        User user = authenticationService.register(request);
+        authenticationService.redisCreateUser(user);
+        return ResponseEntity.ok(authenticationService.createToken(user));
     }
 
     @PostMapping("/login")
     public ResponseEntity<AuthenticationResponseDto> login(@RequestBody AuthenticationRequestDto request) {
-        return ResponseEntity.ok(authenticationService.login(request));
-    }
+        User user = authenticationService.login(request);
+        authenticationService.redisGetUser(user);
 
-    @GetMapping("/demon")
-    public ResponseEntity<String> demo() {
-        return ResponseEntity.ok("Hello World");
+        return ResponseEntity.ok(authenticationService.createToken(user));
     }
-
 
 }

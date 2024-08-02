@@ -7,11 +7,17 @@ import com.example.liquibase.RequestResponseDto.RegisterRequestDto;
 
 public interface AuthenticationService {
 
-    public AuthenticationResponseDto register(RegisterRequestDto request);
+    User register(RegisterRequestDto request);
 
-    public AuthenticationResponseDto login(AuthenticationRequestDto request);
+    User redisCreateUser(User user);
 
-    public void revokeAllUserTokens(User user);
+    User login(AuthenticationRequestDto request);
 
-    public void savedUserToken(User user, String jwtToken);
+    User redisGetUser(User user);
+
+    AuthenticationResponseDto createToken(User user);
+
+    void revokeAllUserTokens(User user);
+
+    void savedUserToken(User user, String jwtToken);
 }

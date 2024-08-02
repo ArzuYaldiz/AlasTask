@@ -8,5 +8,6 @@ public interface ShoppingCartService {
 
      ShoppingCart createShoppingCart(ShoppingCartDto shoppingCartDto);
 
+     ShoppingCart redisSaveCart(int id,ShoppingCart shoppingCart);
 
 }

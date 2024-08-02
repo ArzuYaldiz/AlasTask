@@ -8,6 +8,7 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -24,4 +25,11 @@ public class ShoppingCartImpl implements ShoppingCartService {
 
         return  shoppingCartRepository.save(shoppingCart);
     }
+
+    @CachePut(value = "shopping_cart", key = "#id")
+    public ShoppingCart redisSaveCart(int id,ShoppingCart shoppingCart) {
+        return shoppingCart;
+    }
+
+
 }

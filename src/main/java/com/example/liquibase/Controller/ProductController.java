@@ -23,6 +23,8 @@ public class ProductController {
         }
 
         Product createdProduct = productService.createProduct(request);
+        productService.redisSave(createdProduct.getId(), createdProduct);
+
         return ResponseEntity.ok(createdProduct);
     }
 

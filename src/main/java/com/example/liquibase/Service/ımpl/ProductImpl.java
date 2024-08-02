@@ -17,6 +17,8 @@ import lombok.AccessLevel;
 import lombok.RequiredArgsConstructor;
 import lombok.experimental.FieldDefaults;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cache.annotation.CacheEvict;
+import org.springframework.cache.annotation.CachePut;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -33,9 +35,6 @@ public class ProductImpl implements ProductService {
     ProductDetailRepository productDetailRepository;
     @Autowired
     CategoriesRepository categoriesRepository;
-
-    @PersistenceContext
-    EntityManager entityManager;
 
     @Override
     public Product createProduct(ProductDto productDto) {
@@ -77,11 +76,18 @@ public class ProductImpl implements ProductService {
 
         product.setName(productDto.getName());
 
-        Product savedProduct = productRepository.save(product);
-        return savedProduct;
+        return productRepository.save(product);
     }
 
     @Override
+    @CachePut(value = "products", key = "#product_id")
+    public Product redisSave(int product_id, Product product){
+        System.out.println("Saved to the redis");
+        return product;
+    }
+
+    @Override
+    @CacheEvict(value = "products", key = "#product_id")
     public void removeProduct(int product_id) {
         productRepository.deleteById(product_id);
     }
