@@ -11,7 +11,7 @@ import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
 
-@Data
+
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
