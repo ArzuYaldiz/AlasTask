@@ -1,7 +1,7 @@
 **Overview**
 -
 
-AlasTask is a Spring Boot-based e-commerce API that manages products, categories, shopping carts, and product details using MySQL and JPA. The project follows a layered architecture and utilizes Spring Data JPA, and Spring Security.
+Shopping Website API is a Spring Boot-based e-commerce API that manages products, categories, shopping carts, and product details using MySQL and JPA. The project follows a layered architecture and utilizes Spring Data JPA, and Spring Security.
 
 **Project Structure**
 
