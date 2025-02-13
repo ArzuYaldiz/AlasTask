@@ -1,7 +1,7 @@
 **Overview**
 -
 
-Bina.azCopy is a Spring Boot-based e-commerce API that manages products, categories, shopping carts, and product details using MySQL and JPA. The project follows a layered architecture and utilizes Spring Data JPA, and Spring Security.
+AlasTask is a Spring Boot-based e-commerce API that manages products, categories, shopping carts, and product details using MySQL and JPA. The project follows a layered architecture and utilizes Spring Data JPA, and Spring Security.
 
 **Project Structure**
 
@@ -17,18 +17,7 @@ Service: Contains business logic with interface definitions and their implementa
 
 Controller: REST API endpoints, using @RestController to handle requests and return ResponseEntity objects.
 
-Database Schema & Relationships
-
-Product Table: Stores product information and links to Product Detail (one-to-one) and Category (many-to-one).
-
-Product Detail Table: Contains product attributes like color and image URL.
-
-Category Table: Organizes products into categories.
-
-Shopping Cart Table: Connects to Product Table via Shopping Cart Products, forming a many-to-many relationship.
-
 **Features**
-
 
 ✅ Add, retrieve, and delete products with details and categories.
 
@@ -53,16 +42,6 @@ MySQL
 Spring Security & JWT
 
 Docker & Liquibase
-
-**Getting Started**
--
-1- Clone the repository: 
-
-git clone https://github.com/your-username/Bina.azCopy.git
-
-cd Bina.azCopy
-
-2- Configure application.yml with database credentials.
 
 3- Build and run the application:
 
